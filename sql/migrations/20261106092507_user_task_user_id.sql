@@ -1,0 +1,22 @@
+-- +goose Up
+
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+ALTER TABLE tasks
+ADD COLUMN user_id BIGINT,
+ADD CONSTRAINT fk_user_id
+FOREIGN KEY (user_id)
+REFERENCES users(id)
+ON DELETE CASCADE;
+
+
+-- +goose Down
+ALTER TABLE tasks DROP CONSTRAINT fk_user_id;
+ALTER TABLE tasks DROP COLUMN user_id;
+DROP TABLE users;
