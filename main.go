@@ -64,7 +64,7 @@ func main() {
 	fmt.Printf("Successfully connected to PostgreSQL database. Connection pool: %p\n", pool)
 
 	var user *handlers.User
-	username := "ahmedalbahrawy"
+	username := "khalid"
 	password := "123456"
 
 	password_hash, err := HashPassword(password)
@@ -77,4 +77,10 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Printf("Created user: %+v\n", *user)
+
+	user, err = handlers.GetUserByUsername(ctx, pool, username)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Successfully got user: %+v\n", *user)
 }
