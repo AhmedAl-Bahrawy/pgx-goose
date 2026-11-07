@@ -33,14 +33,10 @@ func loadPool(databaseURL *string) (*pgxpool.Pool, error) {
 		return nil, err
 	}
 
-	// Note: do NOT defer pool.Close() here, it would close the pool
-	// as soon as this function returns, before main ever uses it.
-
 	return pool, nil
 }
 
 func HashPassword(password string) (string, error) {
-	// GenerateFromPassword automatically manages a secure, random salt internally
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
