@@ -68,4 +68,4 @@ func GetUserById(ctx context.Context, pool *pgxpool.Pool, id int64) (*User, erro
 // Implement For Delete User
 // 1st. Delete By Username
 // 2nd. Delete By Id
-// 3rd. Add Get By Username
+// 3rd. Add Get By Id

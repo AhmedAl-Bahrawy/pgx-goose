@@ -61,12 +61,5 @@ func main() {
 
 	var user *handlers.User
 
-	var id int64 = 3
-
-	user, err = handlers.GetUserById(ctx, pool, id)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Printf("got user by id: %v, user full data is: %+v\n", id, user)
+	// test field
 }
