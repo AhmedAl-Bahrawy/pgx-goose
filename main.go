@@ -60,9 +60,9 @@ func main() {
 	fmt.Printf("Successfully connected to PostgreSQL database. Connection pool: %p\n", pool)
 
 	// var user *handlers.User
-
+	var id int64 = 3
 	// test field
-	err = handlers.DeleteUserByUsername(ctx, pool, "ahmed")
+	err = handlers.DeleteUserById(ctx, pool, id)
 	if err != nil {
 		log.Fatal(err)
 	}

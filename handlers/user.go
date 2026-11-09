@@ -75,6 +75,7 @@ func DeleteUserByUsername(ctx context.Context, pool *pgxpool.Pool, username stri
 	err := row.Scan(&user.ID, &user.Username)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
+			fmt.Printf("no rows found in users for username: %v\n", username)
 			return nil
 		}
 		return err
@@ -82,6 +83,30 @@ func DeleteUserByUsername(ctx context.Context, pool *pgxpool.Pool, username stri
 
 	query = "DELETE FROM users WHERE username = $1"
 	tag, err := pool.Exec(ctx, query, username)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Deleted user where is id: %v and username is: %v\n", user.ID, user.Username)
+	fmt.Printf("Deleted %d row(s)\n", tag.RowsAffected())
+	return nil
+}
+
+func DeleteUserById(ctx context.Context, pool *pgxpool.Pool, id int64) error {
+	query := "SELECT id, username FROM users WHERE id = $1"
+	row := pool.QueryRow(ctx, query, id)
+
+	var user User
+	err := row.Scan(&user.ID, &user.Username)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			fmt.Printf("no rows found in users for id: %v\n", id)
+			return nil
+		}
+		return err
+	}
+
+	query = "DELETE FROM users WHERE id = $1"
+	tag, err := pool.Exec(ctx, query, id)
 	if err != nil {
 		return err
 	}
