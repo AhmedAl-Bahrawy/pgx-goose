@@ -91,6 +91,7 @@ func DeleteUserByUsername(ctx context.Context, pool *pgxpool.Pool, username stri
 	return nil
 }
 
+// Function: Done
 func DeleteUserById(ctx context.Context, pool *pgxpool.Pool, id int64) error {
 	query := "SELECT id, username FROM users WHERE id = $1"
 	row := pool.QueryRow(ctx, query, id)
@@ -116,7 +117,7 @@ func DeleteUserById(ctx context.Context, pool *pgxpool.Pool, id int64) error {
 }
 
 // Implement For Delete User
-// 2nd. Delete By Id
 
 // 3rd. Add Get By Id: Done
 // 1st. Delete By Username: Done
+// 2nd. Delete By Id
