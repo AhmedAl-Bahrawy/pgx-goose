@@ -46,3 +46,26 @@ func GetUserByUsername(ctx context.Context, pool *pgxpool.Pool, username string)
 
 	return &user, nil
 }
+
+// Function: Done
+func GetUserById(ctx context.Context, pool *pgxpool.Pool, id int64) (*User, error) {
+	query := "SELECT id, username, password_hash, created_at FROM users WHERE id = $1"
+	row := pool.QueryRow(ctx, query, id)
+
+	var user User
+	err := row.Scan(&user.ID, &user.Username, &user.PasswordHash, &user.CreatedAt)
+
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+// Implement For Delete User
+// 1st. Delete By Username
+// 2nd. Delete By Id
+// 3rd. Add Get By Username
