@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -65,7 +66,32 @@ func GetUserById(ctx context.Context, pool *pgxpool.Pool, id int64) (*User, erro
 	return &user, nil
 }
 
+// Function: Done
+func DeleteUserByUsername(ctx context.Context, pool *pgxpool.Pool, username string) error {
+	query := "SELECT id, username FROM users WHERE username = $1"
+	row := pool.QueryRow(ctx, query, username)
+
+	var user User
+	err := row.Scan(&user.ID, &user.Username)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil
+		}
+		return err
+	}
+
+	query = "DELETE FROM users WHERE username = $1"
+	tag, err := pool.Exec(ctx, query, username)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Deleted user where is id: %v and username is: %v\n", user.ID, user.Username)
+	fmt.Printf("Deleted %d row(s)\n", tag.RowsAffected())
+	return nil
+}
+
 // Implement For Delete User
-// 1st. Delete By Username
 // 2nd. Delete By Id
-// 3rd. Add Get By Id
+
+// 3rd. Add Get By Id: Done
+// 1st. Delete By Username: Done

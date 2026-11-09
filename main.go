@@ -59,7 +59,11 @@ func main() {
 	defer pool.Close()
 	fmt.Printf("Successfully connected to PostgreSQL database. Connection pool: %p\n", pool)
 
-	var user *handlers.User
+	// var user *handlers.User
 
 	// test field
+	err = handlers.DeleteUserByUsername(ctx, pool, "ahmed")
+	if err != nil {
+		log.Fatal(err)
+	}
 }
