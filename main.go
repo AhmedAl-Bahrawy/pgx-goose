@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/AhmedAl-Bahrawy/pgx-goose/db"
+	"github.com/AhmedAl-Bahrawy/pgx-goose/handlers"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
@@ -59,6 +60,13 @@ func main() {
 	fmt.Printf("Successfully connected to PostgreSQL database. Connection pool: %p\n", pool)
 
 	// var user *handlers.User
+	var users *[]handlers.User
 	// var id int64 = 3
 	// test field
+
+	users, err = handlers.GetAllUsers(ctx, pool)
+
+	for _, user := range *users {
+		fmt.Printf("user username: %v, id: %v\n", user.Username, user.ID)
+	}
 }

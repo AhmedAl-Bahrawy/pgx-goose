@@ -113,6 +113,24 @@ func DeleteUserById(ctx context.Context, pool *pgxpool.Pool, id int64) error {
 	return nil
 }
 
+func GetAllUsers(ctx context.Context, pool *pgxpool.Pool) (*[]User, error) {
+	query := "SELECT id, username, password_hash, created_at FROM users"
+	rows, err := pool.Query(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("queru filed: %w", err)
+	}
+
+	// After Execute All Functions rows.Close()
+	// Closes the Objects Safely
+	defer rows.Close()
+
+	users, err := pgx.CollectRows(rows, pgx.RowToStructByName[User])
+	if err != nil {
+		return nil, fmt.Errorf("failed to collect rows: %w", err)
+	}
+	return &users, nil
+}
+
 // Implemented Functions
 // 1st. Get All Users
 // 2nd. Update User By Id
