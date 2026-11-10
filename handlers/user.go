@@ -48,7 +48,6 @@ func GetUserByUsername(ctx context.Context, pool *pgxpool.Pool, username string)
 	return &user, nil
 }
 
-// Function: Done
 func GetUserById(ctx context.Context, pool *pgxpool.Pool, id int64) (*User, error) {
 	query := "SELECT id, username, password_hash, created_at FROM users WHERE id = $1"
 	row := pool.QueryRow(ctx, query, id)
@@ -66,7 +65,6 @@ func GetUserById(ctx context.Context, pool *pgxpool.Pool, id int64) (*User, erro
 	return &user, nil
 }
 
-// Function: Done
 func DeleteUserByUsername(ctx context.Context, pool *pgxpool.Pool, username string) error {
 	query := "SELECT id, username FROM users WHERE username = $1"
 	row := pool.QueryRow(ctx, query, username)
@@ -91,7 +89,6 @@ func DeleteUserByUsername(ctx context.Context, pool *pgxpool.Pool, username stri
 	return nil
 }
 
-// Function: Done
 func DeleteUserById(ctx context.Context, pool *pgxpool.Pool, id int64) error {
 	query := "SELECT id, username FROM users WHERE id = $1"
 	row := pool.QueryRow(ctx, query, id)
@@ -116,8 +113,10 @@ func DeleteUserById(ctx context.Context, pool *pgxpool.Pool, id int64) error {
 	return nil
 }
 
-// Implement For Delete User
+// Implemented Functions
+// 1st. Get All Users
+// 2nd. Update User By Id
+// 3rd. Update User By Username
 
-// 3rd. Add Get By Id: Done
-// 1st. Delete By Username: Done
-// 2nd. Delete By Id
+// Done Functions
+// None Yet
