@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/AhmedAl-Bahrawy/pgx-goose/db"
+	"github.com/AhmedAl-Bahrawy/pgx-goose/handlers"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
@@ -58,8 +59,24 @@ func main() {
 	defer pool.Close()
 	fmt.Printf("Successfully connected to PostgreSQL database. Connection pool: %p\n", pool)
 
-	// var user *handlers.User
+	var user *handlers.User
 	// var users *[]handlers.User
-	// var id int64 = 3
+	//
+	var id int64 = 4
+	var newUsername string = "hamed"
+	var newPasswrod string = "@123AAA"
+	//
 	// test field
+
+	newPasswordHash, err := HashPassword(newPasswrod)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	user, err = handlers.UpdateUserById(ctx, pool, id, newUsername, newPasswordHash)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Updated User new username: %v, new password hash: %v", user.Username, user.PasswordHash)
 }

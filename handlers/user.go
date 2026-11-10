@@ -131,10 +131,38 @@ func GetAllUsers(ctx context.Context, pool *pgxpool.Pool) (*[]User, error) {
 	return &users, nil
 }
 
+func UpdateUserById(ctx context.Context, pool *pgxpool.Pool, id int64, newUsername string, newPasswordHash string) (*User, error) {
+	query := "SELECT id, username FROM users WHERE id = $1"
+	row := pool.QueryRow(ctx, query, id)
+
+	var user User
+	err := row.Scan(&user.ID, &user.Username)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, fmt.Errorf("no rows found in for this user: %w\n", err)
+		}
+		return nil, err
+	}
+
+	query = "UPDATE users SET username = $1, password_hash = $2 WHERE id = $3 RETURNING id, username, password_hash, created_at"
+	err = pool.QueryRow(ctx, query, newUsername, newPasswordHash, id).Scan(
+		&user.ID,
+		&user.Username,
+		&user.PasswordHash,
+		&user.CreatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Printf("Updated user where ID is: %v and new username is: %v\n", user.ID, user.Username)
+
+	return &user, nil
+}
+
 // Implemented Functions
-// 1st. Get All Users
-// 2nd. Update User By Id
 // 3rd. Update User By Username
 
 // Done Functions
-// None Yet
+// 1st. Get All Users
+// 2nd. Update User By Id
