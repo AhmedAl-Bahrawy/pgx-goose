@@ -62,9 +62,10 @@ func main() {
 	var user *handlers.User
 	// var users *[]handlers.User
 	//
-	var id int64 = 4
-	var newUsername string = "hamed"
-	var newPasswrod string = "@123AAA"
+	// var id int64 = 4
+	var username string = "khalid"
+	var newUsername string = "mohammed"
+	var newPasswrod string = "@AhmedMohammed"
 	//
 	// test field
 
@@ -73,7 +74,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	user, err = handlers.UpdateUserById(ctx, pool, id, newUsername, newPasswordHash)
+	// user, err = handlers.UpdateUserById(ctx, pool, id, newUsername, newPasswordHash)
+	// if err != nil {
+	// 	 log.Fatal(err)
+	// }
+
+	// fmt.Printf("Updated User new username: %v, new password hash: %v", user.Username, user.PasswordHash)
+
+	user, err = handlers.UpdateUserByUsername(ctx, pool, username, newUsername, newPasswordHash)
 	if err != nil {
 		log.Fatal(err)
 	}
