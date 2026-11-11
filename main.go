@@ -59,36 +59,25 @@ func main() {
 	defer pool.Close()
 	fmt.Printf("Successfully connected to PostgreSQL database. Connection pool: %p\n", pool)
 
-	var user *handlers.User
+	// var user *handlers.User
 	// var users *[]handlers.User
 	//
-	// var id int64 = 4
-	var username string = "khalid_saqr11"
+	var id int64 = 4
+	// var username string = "khalid_saqr11"
 	// var newUsername string = "mohammed"
 	// var newPasswrod string = "@AhmedMohammed"
-	var password string = "@ABCDEFG"
+	// var password string = "@ABCDEFG"
 	//
 	var task *handlers.Task
 	//
-	var title string = "Do your home work"
-	var completed bool = false
+	// var title string = "Do your home work"
+	// var completed bool = false
 	// test field
-	password_hash, err := HashPassword(password)
-	if err != nil {
-		log.Fatal(err)
-	}
-	user, err = handlers.CreateUser(ctx, pool, username, password_hash)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if user == nil {
-		log.Fatal("user is nil")
-	}
-	fmt.Printf("successfully created user with id: %v and username: %v\n", user.ID, user.Username)
 
-	task, err = handlers.CreateTask(ctx, pool, user, title, completed)
+	task, err = handlers.GetTaskById(ctx, pool, id)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("successfully created task with id: %v, user_id: %v, title: %v and completed: %v\n", task.ID, task.User.ID, task.Title, task.Title)
+
+	fmt.Printf("succsessfully got task with id: %v, user_id: %v\n, tasks user username: %v\n, task title: %v and completed: %v\n", task.ID, task.User.ID, task.User.Username, task.Title, task.Completed)
 }

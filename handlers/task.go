@@ -50,3 +50,43 @@ func CreateTask(
 
 	return &task, nil
 }
+
+func GetTaskById(ctx context.Context, pool *pgxpool.Pool, id int64) (*Task, error) {
+	query := `SELECT
+				id, user_id, title, completed, created_at
+				FROM tasks
+				WHERE id = $1`
+
+	var task Task
+	var user User
+
+	err := pool.QueryRow(ctx, query, id).Scan(
+		&task.ID,
+		&task.UserID,
+		&task.Title,
+		&task.Completed,
+		&task.CreatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	query = `SELECT
+		id, username, password_hash, created_at
+		FROM users
+		WHERE id = $1`
+
+	err = pool.QueryRow(ctx, query, task.UserID).Scan(
+		&user.ID,
+		&user.Username,
+		&user.PasswordHash,
+		&user.CreatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	task.User = &user
+
+	return &task, nil
+}
