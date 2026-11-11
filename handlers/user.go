@@ -13,7 +13,7 @@ import (
 type User struct {
 	ID           int64     `json:"id" db:"id"`
 	Username     string    `json:"username" db:"username"`
-	PasswordHash string    `json:"password_hash" db:"password_hash"`
+	PasswordHash string    `json:"-" db:"password_hash"`
 	CreatedAt    time.Time `json:"created_at" db:"created_at"`
 }
 
@@ -189,10 +189,3 @@ func UpdateUserByUsername(ctx context.Context, pool *pgxpool.Pool, username stri
 
 	return &user, nil
 }
-
-// Implemented Functions
-
-// Done Functions
-// 1st. Get All Users
-// 2nd. Update User By Id
-// 3rd. Update User By Username
