@@ -95,6 +95,57 @@ func GetTaskById(ctx context.Context, pool *pgxpool.Pool, id int64) (*Task, erro
 	return &task, nil
 }
 
+func GetTasksByUser(ctx context.Context, pool *pgxpool.Pool, user *User) (*[]Task, error) {
+	query := `
+		SELECT
+			t.id,
+			t.user_id,
+			t.title,
+			t.completed,
+			t.created_at,
+			u.id,
+			u.username,
+			u.created_at
+		FROM tasks t
+		INNER JOIN users u ON t.user_id = u.id
+		WHERE u.id = $1;
+	`
+
+	rows, err := pool.Query(ctx, query, user.ID)
+	if err != nil {
+		return nil, fmt.Errorf("query failed: %w", err)
+	}
+	defer rows.Close()
+
+	tasks, err := pgx.CollectRows(rows, func(row pgx.CollectableRow) (Task, error) {
+		var task Task
+		var user User
+
+		err := row.Scan(
+			&task.ID,
+			&task.UserID,
+			&task.Title,
+			&task.Completed,
+			&task.CreatedAt,
+			&user.ID,
+			&user.Username,
+			&user.CreatedAt,
+		)
+		if err != nil {
+			return Task{}, err
+		}
+
+		task.User = &user
+
+		return task, nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to collect rows: %w", err)
+	}
+
+	return &tasks, nil
+}
+
 func GetAllTasks(ctx context.Context, pool *pgxpool.Pool) (*[]Task, error) {
 	query := `
 		SELECT

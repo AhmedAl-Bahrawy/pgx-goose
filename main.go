@@ -59,7 +59,7 @@ func main() {
 	defer pool.Close()
 	fmt.Printf("Successfully connected to PostgreSQL database. Connection pool: %p\n", pool)
 
-	// var user *handlers.User
+	var user *handlers.User
 	// var users *[]handlers.User
 	//
 	// var id int64 = 4
@@ -76,12 +76,21 @@ func main() {
 	//
 	// test field
 
-	tasks, err = handlers.GetAllTasks(ctx, pool)
+	user, err = handlers.GetUserById(ctx, pool, 6)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	_, err = handlers.CreateTask(ctx, pool, user, "Do Khawarizm", false)
+	if err != nil {
+		log.Fatal(err)
+	}
+	handlers.CreateTask(ctx, pool, user, "Do Go GYM", true)
+	handlers.CreateTask(ctx, pool, user, "Play Game", true)
+
+	tasks, err = handlers.GetTasksByUser(ctx, pool, user)
+
 	for _, task := range *tasks {
-		fmt.Printf("task %v, for user has id: %v, title: %v, completed: %v\n", task.ID, task.User.ID, task.Title, task.Completed)
+		fmt.Printf("task %v for user: %v, title: %v and completed: %v\n", task.ID, task.User.Username, task.Title, task.Completed)
 	}
 }
