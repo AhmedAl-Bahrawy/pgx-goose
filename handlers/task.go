@@ -52,10 +52,21 @@ func CreateTask(
 }
 
 func GetTaskById(ctx context.Context, pool *pgxpool.Pool, id int64) (*Task, error) {
-	query := `SELECT
-				id, user_id, title, completed, created_at
-				FROM tasks
-				WHERE id = $1`
+	query := `
+		SELECT
+			t.id,
+			t.user_id,
+			t.title,
+			t.completed,
+			t.created_at,
+			u.id,
+			u.username,
+			u.password_hash,
+			u.created_at
+		FROM tasks t
+		LEFT JOIN users u ON t.user_id = u.id
+		WHERE t.id = $1
+	`
 
 	var task Task
 	var user User
@@ -66,17 +77,6 @@ func GetTaskById(ctx context.Context, pool *pgxpool.Pool, id int64) (*Task, erro
 		&task.Title,
 		&task.Completed,
 		&task.CreatedAt,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	query = `SELECT
-		id, username, password_hash, created_at
-		FROM users
-		WHERE id = $1`
-
-	err = pool.QueryRow(ctx, query, task.UserID).Scan(
 		&user.ID,
 		&user.Username,
 		&user.PasswordHash,
@@ -86,7 +86,14 @@ func GetTaskById(ctx context.Context, pool *pgxpool.Pool, id int64) (*Task, erro
 		return nil, err
 	}
 
-	task.User = &user
+	if task.UserID != nil {
+		task.User = &user
+	}
 
 	return &task, nil
+}
+
+func GetAllTasks(ctx context.Context, pool *pgxpool.Pool) (*[]Task, error) {
+	query := "SELECT id, user_id, title, completed, created_at FROM tasks"
+	return nil, nil
 }
