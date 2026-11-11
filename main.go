@@ -62,22 +62,26 @@ func main() {
 	// var user *handlers.User
 	// var users *[]handlers.User
 	//
-	var id int64 = 4
+	// var id int64 = 4
 	// var username string = "khalid_saqr11"
 	// var newUsername string = "mohammed"
 	// var newPasswrod string = "@AhmedMohammed"
 	// var password string = "@ABCDEFG"
 	//
-	var task *handlers.Task
+	// var task *handlers.Task
+	var tasks *[]handlers.Task
 	//
 	// var title string = "Do your home work"
 	// var completed bool = false
+	//
 	// test field
 
-	task, err = handlers.GetTaskById(ctx, pool, id)
+	tasks, err = handlers.GetAllTasks(ctx, pool)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("succsessfully got task with id: %v, user_id: %v\n, tasks user username: %v\n, task title: %v and completed: %v\n", task.ID, task.User.ID, task.User.Username, task.Title, task.Completed)
+	for _, task := range *tasks {
+		fmt.Printf("task %v, for user has id: %v, title: %v, completed: %v\n", task.ID, task.User.ID, task.Title, task.Completed)
+	}
 }
