@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/AhmedAl-Bahrawy/pgx-goose/db"
-	"github.com/AhmedAl-Bahrawy/pgx-goose/handlers"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
@@ -75,9 +74,4 @@ func main() {
 	// var completed bool = false
 	//
 	// test field
-
-	err = handlers.DeleteTaskById(ctx, pool, 5)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
