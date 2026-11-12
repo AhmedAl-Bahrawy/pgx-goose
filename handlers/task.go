@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -19,13 +20,7 @@ type Task struct {
 	User *User `json:"user,omitempty" db:"-"`
 }
 
-func CreateTask(
-	ctx context.Context,
-	pool *pgxpool.Pool,
-	user *User,
-	title string,
-	completed bool,
-) (*Task, error) {
+func CreateTask(ctx context.Context, pool *pgxpool.Pool, user *User, title string, completed bool) (*Task, error) {
 	query := `
         INSERT INTO tasks (user_id, title, completed)
         VALUES ($1, $2, $3)
@@ -197,4 +192,52 @@ func GetAllTasks(ctx context.Context, pool *pgxpool.Pool) (*[]Task, error) {
 	}
 
 	return &tasks, nil
+}
+
+func UpdateTaskById(ctx context.Context, pool *pgxpool.Pool, id int64, newTitle string, newCompleted bool) (*Task, error) {
+	query := `
+		UPDATE tasks
+		SET title = $1, completed = $2
+		WHERE id = $3
+		RETURNING id, user_id, title, completed, created_at`
+
+	var task Task
+	err := pool.QueryRow(ctx, query, newTitle, newCompleted, id).Scan(
+		&task.ID,
+		&task.UserID,
+		&task.Title,
+		&task.Completed,
+		&task.CreatedAt,
+	)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, fmt.Errorf("task with id %d not found: %w", id, err)
+		}
+		return nil, err
+	}
+
+	if task.UserID != nil {
+		var user User
+		err = pool.QueryRow(ctx,
+			"SELECT id, username, password_hash, created_at FROM users WHERE id = $1",
+			*task.UserID,
+		).Scan(
+			&user.ID,
+			&user.Username,
+			&user.PasswordHash,
+			&user.CreatedAt,
+		)
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return &task, nil
+			}
+			return nil, err
+		}
+		task.User = &user
+	}
+
+	fmt.Printf("Updated task where ID is: %v, new title is: %v and new completed is: %v\n",
+		task.ID, task.Title, task.Completed)
+
+	return &task, nil
 }

@@ -59,7 +59,7 @@ func main() {
 	defer pool.Close()
 	fmt.Printf("Successfully connected to PostgreSQL database. Connection pool: %p\n", pool)
 
-	var user *handlers.User
+	// var user *handlers.User
 	// var users *[]handlers.User
 	//
 	// var id int64 = 4
@@ -68,29 +68,15 @@ func main() {
 	// var newPasswrod string = "@AhmedMohammed"
 	// var password string = "@ABCDEFG"
 	//
-	// var task *handlers.Task
-	var tasks *[]handlers.Task
+	var task *handlers.Task
+	// var tasks *[]handlers.Task
 	//
 	// var title string = "Do your home work"
 	// var completed bool = false
 	//
 	// test field
 
-	user, err = handlers.GetUserById(ctx, pool, 6)
-	if err != nil {
-		log.Fatal(err)
-	}
+	task, err = handlers.UpdateTaskById(ctx, pool, 4, "Go eat some pizza", true)
 
-	_, err = handlers.CreateTask(ctx, pool, user, "Do Khawarizm", false)
-	if err != nil {
-		log.Fatal(err)
-	}
-	handlers.CreateTask(ctx, pool, user, "Do Go GYM", true)
-	handlers.CreateTask(ctx, pool, user, "Play Game", true)
-
-	tasks, err = handlers.GetTasksByUser(ctx, pool, user)
-
-	for _, task := range *tasks {
-		fmt.Printf("task %v for user: %v, title: %v and completed: %v\n", task.ID, task.User.Username, task.Title, task.Completed)
-	}
+	fmt.Printf("task with id: %d updated\nthis task's user id: %v\n", task.ID, *task.UserID)
 }
