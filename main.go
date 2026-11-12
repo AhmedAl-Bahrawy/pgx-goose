@@ -68,7 +68,7 @@ func main() {
 	// var newPasswrod string = "@AhmedMohammed"
 	// var password string = "@ABCDEFG"
 	//
-	var task *handlers.Task
+	// var task *handlers.Task
 	// var tasks *[]handlers.Task
 	//
 	// var title string = "Do your home work"
@@ -76,7 +76,8 @@ func main() {
 	//
 	// test field
 
-	task, err = handlers.UpdateTaskById(ctx, pool, 4, "Go eat some pizza", true)
-
-	fmt.Printf("task with id: %d updated\nthis task's user id: %v\n", task.ID, *task.UserID)
+	err = handlers.DeleteTaskById(ctx, pool, 5)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

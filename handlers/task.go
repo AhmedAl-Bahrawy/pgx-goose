@@ -241,3 +241,20 @@ func UpdateTaskById(ctx context.Context, pool *pgxpool.Pool, id int64, newTitle 
 
 	return &task, nil
 }
+
+func DeleteTaskById(ctx context.Context, pool *pgxpool.Pool, id int64) error {
+	query := "DELETE FROM tasks WHERE id = $1"
+
+	tag, err := pool.Exec(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	if tag.RowsAffected() == 0 {
+		return fmt.Errorf("task with id %d not found: %w", id, pgx.ErrNoRows)
+	}
+
+	fmt.Printf("task with id %d deleted successfully\n", id)
+
+	return nil
+}
